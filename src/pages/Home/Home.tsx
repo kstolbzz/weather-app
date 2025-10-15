@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
 
-import { Button, Grid, TextField, ToggleButton, ToggleButtonGroup } from '@mui/material';
+import { Button, Grid, ToggleButton, ToggleButtonGroup } from '@mui/material';
 import dayjs, { Dayjs } from 'dayjs';
 
 import { DatePicker } from "@mui/x-date-pickers"
+import type { PickerValue } from '@mui/x-date-pickers/internals';
 
+import TextInput from '../../components/TextInput/TextInput';
 import PercentageBar from '../../components/PercentageBar/PercentageBar';
 
 import { getForecastAPI } from '../../services/getForecast';
@@ -40,16 +42,12 @@ function Home() {
   // Set the last allowable date to be picked to five days from now
   const maxDate = minDate.add(5, 'day');
 
-  // Reusable function for text area changes for lat/lon
-  const handleChange = (
-    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
-    setState(
-      {
-        ...state,
-        [event.target.id]: event.target.value
-      }
-    )
+  // Reusable function for text area changes in child component
+  const handleTextFieldChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    setState({
+      ...state,
+      [event.target.id.toLowerCase()]: event.target.value
+    })
   }
 
   // Function for day/night toggle
@@ -127,22 +125,16 @@ function Home() {
                 <p>Enter the inputs below to get your weather forecast!</p>
               </Grid>
               <Grid size={12}>
-                <TextField 
-                  label="Latitude" 
-                  aria-label="latitude" 
-                  id="latitude" 
-                  type="number" 
+                <TextInput
+                  label="Latitude"
                   value={state?.latitude}
-                  onChange={handleChange}></TextField>
+                  onChange={handleTextFieldChange} />
               </Grid>
               <Grid size={12}>
-                <TextField 
+                <TextInput
                   label="Longitude"
-                  aria-label="longitude"
-                  id="longitude"
-                  type="number"
                   value={state?.longitude}
-                  onChange={handleChange}></TextField>
+                  onChange={handleTextFieldChange} />
               </Grid>
               <Grid size={12}>
                 <div id="date-picker">
@@ -151,11 +143,11 @@ function Home() {
                     minDate={minDate}
                     maxDate={maxDate}
                     aria-label="Date picker"
-                    onChange={(newValue: Dayjs) => {
+                    onChange={(newValue: PickerValue) => {
                       // Set state
                       setState({
                         ...state,
-                        date: newValue
+                        date: dayjs(newValue)
                       })
                     }} />
                 </div>     
