@@ -85,7 +85,7 @@ function Home() {
         )
 
         // Validation to only show the information for dates within 5 days of today
-        const allowableDate = (selectedDate - dayjs().date().valueOf() <= 5);
+        const allowableDate = (selectedDate - dayjs().date().valueOf() >= 0 && selectedDate - dayjs().date().valueOf() <= 5);
 
         // If the object is undefined, nothing in the array matches the requested values so we shouldn't update the forecast
         if (weatherObj !== undefined && allowableDate) {
@@ -150,6 +150,7 @@ function Home() {
                     defaultValue={minDate}
                     minDate={minDate}
                     maxDate={maxDate}
+                    aria-label="Date picker"
                     onChange={(newValue: Dayjs) => {
                       // Set state
                       setState({
@@ -196,14 +197,14 @@ function Home() {
               }
               {state?.temperature !== undefined &&
                 <Grid size={12}>
-                  <p>Current Temperature: {state.temperature}°F</p>
+                  <p>Temperature: {state.temperature}°F</p>
                   <PercentageBar xStart={-50} xEnd={150} xValue={state?.temperature} format={"degreesF"}/>
                 </Grid>
               }
               {state?.chanceOfRain !== undefined &&
                 <Grid size={12}>
                   <p>Percent Chance of Rain: {state.chanceOfRain}%</p>
-                  <PercentageBar xStart={0} xEnd={100} xValue={state?.chanceOfRain} format={"percent"}/>
+                  <PercentageBar xStart={0} xEnd={100} xValue={state?.chanceOfRain} format={"percentRain"}/>
                 </Grid>
               }
             </Grid>

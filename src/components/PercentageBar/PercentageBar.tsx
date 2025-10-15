@@ -6,7 +6,7 @@ interface PercentageBarProps {
   xStart: number,
   xEnd: number,
   xValue: number,
-  format: 'degreesF' | 'percent'
+  format: 'degreesF' | 'percentRain'
 }
 
 const PercentageBar: React.FC<PercentageBarProps> = ({ xStart, xEnd, xValue, format }) => {
@@ -20,13 +20,13 @@ const PercentageBar: React.FC<PercentageBarProps> = ({ xStart, xEnd, xValue, for
   return (
     <div className="percentage-bar-container">
         <div className="percentage-bar-item">
-          {xStart}{format === "degreesF" && "°F"}{format === "percent" && "%"}
+          {xStart}{format === "degreesF" && "°F"}{format === "percentRain" && "%"}
         </div>
       <div className="percentage-bar">
-        <div className="percentage-fill" style={{ width: fillWidth }} />
+        <div className="percentage-fill" aria-label={format + "percentage bar, " + fillWidth + "% filled"} style={{ width: fillWidth }} />
       </div>
       <div className="percentage-bar-item">
-        {xEnd}{format === "degreesF" && "°F"}{format === "percent" && "%"}
+        {xEnd}{format === "degreesF" && "°F"}{format === "percentRain" && "%"}
       </div>
     </div>
   )
