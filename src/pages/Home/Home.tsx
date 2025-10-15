@@ -57,7 +57,6 @@ function Home() {
     event: React.MouseEvent<HTMLElement>,
     newAlignment: string
   ) => {
-    console.log(newAlignment)
     setState({
       ...state,
       time: newAlignment
@@ -73,9 +72,36 @@ function Home() {
       try {
         // Cast the state variables for lat/lon to number to be used in the API call
         const data = await getForecastAPI(Number(state?.latitude), Number(state?.longitude));
-        console.log(data)
+        // const data = await getForecastAPI(38.2527, -85.7585)
+        // The weather data is returned as an array of objects to the front end
+        const weatherDataArray = data.properties.periods;
+        // A variable to ge the value of the date from the state variable which is tracking the selected date
+        const selectedDate = state.date.date().valueOf();
+        // A boolean variable to track whether we want the daytime value or the nighttime value
+        const wantDaytime = state.time === "day" ? true : false;
+        // Return the object from the weather data array for the correct calendar day and daytime
+        const weatherObj = weatherDataArray.find((obj: any) => 
+          dayjs(obj.startTime).date().valueOf() == selectedDate && ((obj.isDaytime === wantDaytime))
+        )
+
+        // Validation to only show the information for dates within 5 days of today
+        const allowableDate = (selectedDate - dayjs().date().valueOf() <= 5);
+
+        // If the object is undefined, nothing in the array matches the requested values so we shouldn't update the forecast
+        if (weatherObj !== undefined && allowableDate) {
+          // Add the information to show the forecast on the right hand side
+          setState({
+            ...state,
+            textForecast: weatherObj.detailedForecast,
+            temperature: weatherObj.temperature,
+            chanceOfRain: weatherObj.probabilityOfPrecipitation.value
+          })
+        } else {
+          alert("Error! This date is outside of the range of acceptable values!")
+        }
         // Once we have the data, use this to populate the rest of the state variables to update the forecast on the right hand side
       } catch (err) {
+        alert("Error! There is an error with the API call.")
         console.log(err);
       }
     }
@@ -126,7 +152,6 @@ function Home() {
                     maxDate={maxDate}
                     onChange={(newValue: Dayjs) => {
                       // Set state
-                      console.log(newValue)
                       setState({
                         ...state,
                         date: newValue
@@ -171,13 +196,13 @@ function Home() {
               }
               {state?.temperature !== undefined &&
                 <Grid size={12}>
-                  <p>Current Temperature:</p>
+                  <p>Current Temperature: {state.temperature}°F</p>
                   <PercentageBar xStart={-50} xEnd={150} xValue={state?.temperature} format={"degreesF"}/>
                 </Grid>
               }
               {state?.chanceOfRain !== undefined &&
                 <Grid size={12}>
-                  <p>Percent Chance of Rain:</p>
+                  <p>Percent Chance of Rain: {state.chanceOfRain}%</p>
                   <PercentageBar xStart={0} xEnd={100} xValue={state?.chanceOfRain} format={"percent"}/>
                 </Grid>
               }
