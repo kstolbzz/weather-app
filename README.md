@@ -4,7 +4,12 @@ This solution was scaffolded in Vite. In order to run this weather app locally, 
 Once you have the local application running, you must enter a value for latitude, a value for longitude, a date between today and five days from now, and a selection on whether you want the forecast for the daytime or nightime. Once all of these values have been entered and you click submit, the weather forecast will populate on the right hand side of your browser.
 
 ## Future Considerations
-Below in no particular order is a list of changes and improvements I would make to the application if given more than 3 hours to work on a solution
+Below in no particular order is a list of changes and improvements I would make to the application if given more than 3 hours to work on a solution:
+
+- Current Solution Issues
+  - In `Home.tsx` there is an onChange function with an error at line 154. This issue has not impacted being able to run the application, so I did not attempt to debug it. If given more time, I would ensure that this was fixed.
+  - In `Home.tsx`, in the `handleSubmit` function, the event passed to this function has a type of `any`. This would be updated to the correct mouse event.
+  - In `Home.tsx`, in the `handleSubmit` function, the object within the returned weather array also has a type of `any`. With more time, I would create an interface to type out the response object in order to follow typescript guidelines and put guardrails in place for any future changes to the APIs being called.
 
 - Implement a Redux setup with RTK Query: While I have worked with enterprise level applications which utilize Redux, I have never set up a new application which utilizes this technology. Given this, along with the time constraint of the assignment, I decided to proceed with a single state variable in the one page this application contains. While this works for the proof of concept shown here, if this application were to scale to include more features, best practice dictates that state management should be handled with Redux. On top of this, RTK Query would be helpful for eliminating the currently hand written data fetching logic.
 
